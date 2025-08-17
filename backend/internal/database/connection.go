@@ -13,33 +13,39 @@ import (
 var DB *sqlx.DB
 
 func Initialize() error {
-	dbHost := os.Getenv("DB_HOST")
-	if dbHost == "" {
-		dbHost = "postgres"
-	}
+	// First try DATABASE_URL (Railway's standard)
+	connStr := os.Getenv("DATABASE_URL")
 	
-	dbPort := os.Getenv("DB_PORT")
-	if dbPort == "" {
-		dbPort = "5432"
-	}
-	
-	dbUser := os.Getenv("DB_USER")
-	if dbUser == "" {
-		dbUser = "cyrup"
-	}
-	
-	dbPassword := os.Getenv("DB_PASSWORD")
-	if dbPassword == "" {
-		dbPassword = "cyrup_password"
-	}
-	
-	dbName := os.Getenv("DB_NAME")
-	if dbName == "" {
-		dbName = "cyrup_db"
-	}
+	// If DATABASE_URL is not set, build from individual components
+	if connStr == "" {
+		dbHost := os.Getenv("DB_HOST")
+		if dbHost == "" {
+			dbHost = "postgres"
+		}
+		
+		dbPort := os.Getenv("DB_PORT")
+		if dbPort == "" {
+			dbPort = "5432"
+		}
+		
+		dbUser := os.Getenv("DB_USER")
+		if dbUser == "" {
+			dbUser = "cyrup"
+		}
+		
+		dbPassword := os.Getenv("DB_PASSWORD")
+		if dbPassword == "" {
+			dbPassword = "cyrup_password"
+		}
+		
+		dbName := os.Getenv("DB_NAME")
+		if dbName == "" {
+			dbName = "cyrup_db"
+		}
 
-	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		dbHost, dbPort, dbUser, dbPassword, dbName)
+		connStr = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+			dbHost, dbPort, dbUser, dbPassword, dbName)
+	}
 
 	var err error
 	DB, err = sqlx.Connect("postgres", connStr)
