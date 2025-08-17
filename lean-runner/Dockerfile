@@ -9,7 +9,7 @@ RUN go mod init lean-runner && \
 # Runtime stage
 FROM ubuntu:22.04
 
-# Install dependencies including git (required for Lean)
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     wget \
     ca-certificates \
@@ -18,26 +18,37 @@ RUN apt-get update && apt-get install -y \
     zstd \
     && rm -rf /var/lib/apt/lists/*
 
-# Install LEAN 4 using the official installer script
-RUN curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain leanprover/lean4:stable
+# Download and install LEAN 4 directly (not using elan to avoid runtime downloads)
+ENV LEAN_VERSION=v4.12.0
+WORKDIR /tmp
 
-# Set PATH to include elan and lean
-ENV PATH="/root/.elan/bin:${PATH}"
+# Detect architecture and download appropriate LEAN binary
+RUN ARCH=$(uname -m) && \
+    echo "Architecture: $ARCH" && \
+    if [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then \
+        LEAN_ARCH="aarch64"; \
+    else \
+        LEAN_ARCH="x86_64"; \
+    fi && \
+    echo "Downloading LEAN for Linux $LEAN_ARCH..." && \
+    wget -q "https://github.com/leanprover/lean4/releases/download/${LEAN_VERSION}/lean-${LEAN_VERSION#v}-linux_${LEAN_ARCH}.tar.zst" -O lean.tar.zst && \
+    tar --use-compress-program=unzstd -xf lean.tar.zst && \
+    ls -la && \
+    mv lean-${LEAN_VERSION#v}-linux_${LEAN_ARCH} /opt/lean && \
+    rm lean.tar.zst
 
-# Force download of LEAN toolchain during build
+# Set up environment
+ENV PATH="/opt/lean/bin:${PATH}"
+ENV LEAN_PATH="/opt/lean/lib/lean"
+
+# Verify LEAN is working
 RUN lean --version && \
-    echo 'Forcing LEAN download...' && \
     echo '#check Nat' | lean --stdin && \
-    echo 'def main : IO Unit := IO.println "Hello, World!"' > /tmp/test.lean && \
-    lean /tmp/test.lean && \
-    rm /tmp/test.lean && \
-    echo 'LEAN installation complete'
+    echo 'def hello : String := "world"' | lean --stdin
 
-# Create working directory
+# Create working directories
 WORKDIR /workspace
-
-# Create scripts directory
-RUN mkdir -p /scripts
+RUN mkdir -p /scripts /proofs
 
 # Copy the runner script and Go server
 COPY scripts/run_lean.sh /scripts/
