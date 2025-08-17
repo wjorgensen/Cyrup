@@ -34,9 +34,9 @@ ENV PATH="/opt/lean/bin:${PATH}"
 ENV LEAN_PATH="/opt/lean/lib/lean"
 
 # Verify LEAN is working with real examples
-RUN lean --version && \
-    echo 'example : 2 + 2 = 4 := by rfl' | lean --stdin && \
-    echo 'theorem simple : 1 + 1 = 2 := by rfl' | lean --stdin
+RUN /opt/lean/bin/lean --version && \
+    echo 'example : 2 + 2 = 4 := by rfl' | /opt/lean/bin/lean --stdin && \
+    echo 'theorem simple : 1 + 1 = 2 := by rfl' | /opt/lean/bin/lean --stdin
 
 # Create working directories
 WORKDIR /workspace
