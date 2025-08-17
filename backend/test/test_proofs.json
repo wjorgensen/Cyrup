@@ -1,0 +1,42 @@
+{
+  "valid_proofs": [
+    {
+      "name": "Simple arithmetic",
+      "code": "theorem simple_arithmetic : 2 + 2 = 4 := rfl"
+    },
+    {
+      "name": "Basic logic",
+      "code": "theorem modus_ponens (p q : Prop) : p → (p → q) → q := fun hp hpq => hpq hp"
+    },
+    {
+      "name": "Natural number proof",
+      "code": "theorem add_comm_example : ∀ n m : Nat, n + m = m + n := Nat.add_comm"
+    },
+    {
+      "name": "Simple equality",
+      "code": "theorem eq_self (n : Nat) : n = n := rfl"
+    },
+    {
+      "name": "Zero addition",
+      "code": "theorem zero_add (n : Nat) : 0 + n = n := Nat.zero_add n"
+    }
+  ],
+  "invalid_proofs": [
+    {
+      "name": "Syntax error",
+      "code": "theorem broken_syntax : 2 + 2 = 5 :="
+    },
+    {
+      "name": "Type mismatch",
+      "code": "theorem type_error : \"hello\" + 2 = 4 := rfl"
+    },
+    {
+      "name": "Undefined variable",
+      "code": "theorem undefined_var : x + y = z := rfl"
+    },
+    {
+      "name": "Wrong proof",
+      "code": "theorem wrong_proof : 2 + 2 = 5 := rfl"
+    }
+  ]
+}

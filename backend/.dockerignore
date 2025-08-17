@@ -1,0 +1,30 @@
+# Git
+.git
+.gitignore
+
+# Go
+*.exe
+*.dll
+*.so
+*.dylib
+test-build
+
+# Temporary files
+*.test
+*.out
+tmp/
+temp/
+
+# Documentation
+README.md
+*.md
+
+# Docker
+docker-compose.yml
+Dockerfile*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
