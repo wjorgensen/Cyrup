@@ -7,26 +7,23 @@ import {ReputationSystem} from "../src/ReputationSystem.sol";
 
 contract DeployBaseSepolia is Script {
     function run() external {
-        // Get deployer private key from environment
-        uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-        
-        // Start broadcasting transactions
-        vm.startBroadcast(deployerPrivateKey);
+        // Start broadcasting transactions (forge will use the private key from command line)
+        vm.startBroadcast();
         
         console.log("Deploying contracts to Base Sepolia...");
-        console.log("Deployer address:", vm.addr(deployerPrivateKey));
+        console.log("Deployer address:", msg.sender);
         
-        // Deploy ReputationSystem
-        ReputationSystem reputation = new ReputationSystem();
-        console.log("ReputationSystem deployed at:", address(reputation));
-        
-        // Deploy ChallengeFactory with ReputationSystem address
-        ChallengeFactory factory = new ChallengeFactory(address(reputation));
+        // Deploy ChallengeFactory first (it has no constructor parameters)
+        ChallengeFactory factory = new ChallengeFactory();
         console.log("ChallengeFactory deployed at:", address(factory));
         
-        // Authorize the factory in the reputation system
-        reputation.authorizeFactory(address(factory));
-        console.log("Factory authorized in ReputationSystem");
+        // Deploy ReputationSystem with the ChallengeFactory address
+        ReputationSystem reputation = new ReputationSystem(address(factory));
+        console.log("ReputationSystem deployed at:", address(reputation));
+        
+        // Set the reputation system in the factory
+        factory.setReputationSystem(address(reputation));
+        console.log("ReputationSystem set in ChallengeFactory");
         
         vm.stopBroadcast();
         

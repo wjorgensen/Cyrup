@@ -1,0 +1,42 @@
+{
+  "name": "cyrup",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@coinbase/cdp-core": "^0.0.20",
+    "@coinbase/cdp-hooks": "^0.0.20",
+    "@coinbase/cdp-react": "^0.0.20",
+    "@coinbase/cdp-wagmi": "^0.0.20",
+    "@monaco-editor/react": "^4.7.0",
+    "@tailwindcss/typography": "^0.5.16",
+    "@tanstack/react-query": "^5.85.3",
+    "@types/react-syntax-highlighter": "^15.5.13",
+    "next": "14.2.20",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^15.6.1",
+    "rehype-raw": "^7.0.0",
+    "rehype-sanitize": "^6.0.0",
+    "remark-gfm": "^4.0.1",
+    "viem": "^2.33.3",
+    "wagmi": "^2.16.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.20",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}

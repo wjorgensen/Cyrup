@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #FAF5E6;
+  --foreground: #000000;
+  --cream: #FAF5E6;
+  --black: #000000;
+  --purple: #7E22CE;
+  --purple-light: #A855F7;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Courier New', Courier, monospace;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .shadow-box {
+    box-shadow: 4px 4px 0px #000000;
+    border: 2px solid #000000;
+  }
+  
+  .shadow-box-sm {
+    box-shadow: 2px 2px 0px #000000;
+    border: 2px solid #000000;
+  }
+  
+  .shadow-box-lg {
+    box-shadow: 6px 6px 0px #000000;
+    border: 2px solid #000000;
+  }
+  
+  .shadow-box-purple {
+    box-shadow: 4px 4px 0px #7E22CE;
+    border: 2px solid #000000;
+  }
+  
+  .hover-lift {
+    transition: all 0.2s ease;
+  }
+  
+  .hover-lift:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px #000000;
+  }
+}
