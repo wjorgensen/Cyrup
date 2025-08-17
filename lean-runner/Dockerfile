@@ -24,10 +24,10 @@ RUN apt-get update && \
 WORKDIR /tmp
 
 # Download LEAN 4.12.0 for x86_64
-RUN wget "https://github.com/leanprover/lean4/releases/download/v4.12.0/lean-4.12.0-linux_x86_64.tar.zst" && \
-    tar --use-compress-program=unzstd -xf lean-4.12.0-linux_x86_64.tar.zst && \
-    mv lean-4.12.0-linux_x86_64 /opt/lean && \
-    rm lean-4.12.0-linux_x86_64.tar.zst
+RUN wget "https://github.com/leanprover/lean4/releases/download/v4.12.0/lean-4.12.0-linux_x86.tar.zst" && \
+    tar --use-compress-program=unzstd -xf lean-4.12.0-linux_x86.tar.zst && \
+    mv lean-4.12.0-linux_x86 /opt/lean && \
+    rm lean-4.12.0-linux_x86.tar.zst
 
 # Set up environment
 ENV PATH="/opt/lean/bin:${PATH}"
