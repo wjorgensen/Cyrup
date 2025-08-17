@@ -6,37 +6,27 @@ RUN go mod init lean-runner && \
     go mod tidy && \
     go build -o lean-server server.go
 
-# Runtime stage with LEAN 4
+# Runtime stage with LEAN 4 via elan
 FROM ubuntu:22.04
 
 # Install dependencies
 RUN apt-get update && \
     apt-get install -y \
-    wget \
-    ca-certificates \
     curl \
     git \
-    zstd \
-    libgmp-dev \
+    bash \
     && rm -rf /var/lib/apt/lists/*
 
-# Download and install LEAN 4
-WORKDIR /tmp
-
-# Download LEAN 4.12.0 for x86_64
-RUN wget "https://github.com/leanprover/lean4/releases/download/v4.12.0/lean-4.12.0-linux_x86.tar.zst" && \
-    tar --use-compress-program=unzstd -xf lean-4.12.0-linux_x86.tar.zst && \
-    mv lean-4.12.0-linux_x86 /opt/lean && \
-    rm lean-4.12.0-linux_x86.tar.zst
+# Install elan and LEAN 4
+RUN curl https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh -sSf | bash -s -- -y --default-toolchain leanprover/lean4:v4.12.0
 
 # Set up environment
-ENV PATH="/opt/lean/bin:${PATH}"
-ENV LEAN_PATH="/opt/lean/lib/lean"
+ENV PATH="/root/.elan/bin:${PATH}"
 
 # Verify LEAN is working with real examples
-RUN /opt/lean/bin/lean --version && \
-    echo 'example : 2 + 2 = 4 := by rfl' | /opt/lean/bin/lean --stdin && \
-    echo 'theorem simple : 1 + 1 = 2 := by rfl' | /opt/lean/bin/lean --stdin
+RUN lean --version && \
+    echo 'example : 2 + 2 = 4 := by rfl' | lean --stdin && \
+    echo 'theorem simple : 1 + 1 = 2 := by rfl' | lean --stdin
 
 # Create working directories
 WORKDIR /workspace
@@ -44,6 +34,7 @@ RUN mkdir -p /scripts /proofs
 
 # Create the run_lean.sh script that actually runs LEAN
 RUN echo '#!/bin/bash' > /scripts/run_lean.sh && \
+    echo 'export PATH="/root/.elan/bin:${PATH}"' >> /scripts/run_lean.sh && \
     echo 'PROOF_FILE="/tmp/proof_$$.lean"' >> /scripts/run_lean.sh && \
     echo 'cat > "$PROOF_FILE"' >> /scripts/run_lean.sh && \
     echo 'OUTPUT=$(lean "$PROOF_FILE" 2>&1)' >> /scripts/run_lean.sh && \
