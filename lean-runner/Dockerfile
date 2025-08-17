@@ -6,35 +6,27 @@ RUN go mod init lean-runner && \
     go mod tidy && \
     go build -o lean-server server.go
 
-# Runtime stage
-FROM ubuntu:22.04
+# Runtime stage - using Alpine for reliability
+FROM alpine:3.18
 
 # Install dependencies
-RUN apt-get update && apt-get install -y \
+RUN apk add --no-cache \
     wget \
     ca-certificates \
     curl \
     git \
     zstd \
-    && rm -rf /var/lib/apt/lists/*
+    gcompat \
+    libstdc++ \
+    bash
 
-# Download and install LEAN 4 directly (not using elan to avoid runtime downloads)
-ENV LEAN_VERSION=v4.12.0
+# Download and install LEAN 4
 WORKDIR /tmp
 
-# Detect architecture and download appropriate LEAN binary
-RUN ARCH=$(uname -m) && \
-    echo "Architecture: $ARCH" && \
-    if [ "$ARCH" = "aarch64" ] || [ "$ARCH" = "arm64" ]; then \
-        LEAN_ARCH="aarch64"; \
-    else \
-        LEAN_ARCH="x86_64"; \
-    fi && \
-    echo "Downloading LEAN for Linux $LEAN_ARCH..." && \
-    wget -q "https://github.com/leanprover/lean4/releases/download/v4.12.0/lean-4.12.0-linux_${LEAN_ARCH}.tar.zst" -O lean.tar.zst && \
+# Download LEAN for x86_64 (Railway uses x86_64)
+RUN wget -q "https://github.com/leanprover/lean4/releases/download/v4.12.0/lean-4.12.0-linux_x86_64.tar.zst" -O lean.tar.zst && \
     tar --use-compress-program=unzstd -xf lean.tar.zst && \
-    ls -la && \
-    mv lean-4.12.0-linux_${LEAN_ARCH} /opt/lean && \
+    mv lean-4.12.0-linux_x86_64 /opt/lean && \
     rm lean.tar.zst
 
 # Set up environment
@@ -50,16 +42,18 @@ RUN lean --version && \
 WORKDIR /workspace
 RUN mkdir -p /scripts /proofs
 
-# Copy the runner script and Go server
+# Copy scripts
 COPY scripts/run_lean.sh /scripts/
 RUN chmod +x /scripts/run_lean.sh
+
+# Copy Go server
 COPY --from=builder /build/lean-server /usr/local/bin/lean-server
 
-# Set working directory for proof files
+# Set working directory
 WORKDIR /proofs
 
-# Expose port for HTTP server
+# Expose port
 EXPOSE 8081
 
-# Run the Go server by default
+# Run the server
 CMD ["/usr/local/bin/lean-server"]
