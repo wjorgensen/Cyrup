@@ -31,10 +31,10 @@ RUN ARCH=$(uname -m) && \
         LEAN_ARCH="x86_64"; \
     fi && \
     echo "Downloading LEAN for Linux $LEAN_ARCH..." && \
-    wget -q "https://github.com/leanprover/lean4/releases/download/${LEAN_VERSION}/lean-${LEAN_VERSION#v}-linux_${LEAN_ARCH}.tar.zst" -O lean.tar.zst && \
+    wget -q "https://github.com/leanprover/lean4/releases/download/v4.12.0/lean-4.12.0-linux_${LEAN_ARCH}.tar.zst" -O lean.tar.zst && \
     tar --use-compress-program=unzstd -xf lean.tar.zst && \
     ls -la && \
-    mv lean-${LEAN_VERSION#v}-linux_${LEAN_ARCH} /opt/lean && \
+    mv lean-4.12.0-linux_${LEAN_ARCH} /opt/lean && \
     rm lean.tar.zst
 
 # Set up environment
