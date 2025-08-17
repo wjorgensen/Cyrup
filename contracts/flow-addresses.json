@@ -1,0 +1,19 @@
+{
+  "network": "Flow EVM Testnet",
+  "chainId": 545,
+  "rpcUrl": "https://testnet.evm.nodes.onflow.org",
+  "contracts": {
+    "ReputationSystem": "0xF3C4B26F6E92d2358dC66b99Fd6cC3471b531071",
+    "ChallengeFactory": "0xb301186922D32B9AF3d5a8078090E2184c41C246"
+  },
+  "deployment": {
+    "timestamp": "2025-08-17",
+    "deployer": "0x4d12eb7e5049aFA80f1c4b964C10a5BA95b60EcB",
+    "transactionHash": "Check broadcast/DeployFlow.s.sol/545/run-latest.json for details"
+  },
+  "notes": {
+    "ChallengeEscrow": "Implementation deployed as part of ChallengeFactory, clones are created for each challenge",
+    "gasUsed": "6001250",
+    "gasPrice": "0.0000001 gwei"
+  }
+}
