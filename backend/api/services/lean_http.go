@@ -30,7 +30,7 @@ func NewLeanHTTPService() *LeanHTTPService {
 	leanURL := os.Getenv("LEAN_RUNNER_URL")
 	if leanURL == "" {
 		// Default for local docker-compose
-		leanURL = "http://lean-runner:8081"
+		leanURL = "http://lean-runner:8080"
 	}
 
 	return &LeanHTTPService{

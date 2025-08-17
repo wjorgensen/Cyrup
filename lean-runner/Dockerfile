@@ -21,5 +21,5 @@ RUN echo '#!/bin/bash' > /scripts/run_lean.sh && \
 # Copy Go server
 COPY --from=builder /build/lean-server /usr/local/bin/lean-server
 
-EXPOSE 8081
+EXPOSE 8080
 CMD ["/usr/local/bin/lean-server"]
